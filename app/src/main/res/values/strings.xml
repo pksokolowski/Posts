@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">posty</string>
+    <string name="loading_message">loading…</string>
+    <string name="comments_header">Comments</string>
+    <string name="status_offline">You happen to be offline</string>
+</resources>
