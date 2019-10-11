@@ -56,12 +56,11 @@ class ActivePostFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.getActivePost().observe(viewLifecycleOwner, Observer {
-            it?.let { comments ->
+            it?.let {
                 if (commentsAdapter == null) {
                     commentsAdapter = CommentsAdapter(it)
                     commentsRecyclerView.adapter = commentsAdapter
-                }
-                else
+                } else
                     commentsAdapter?.setPostData(it)
             }
         })
