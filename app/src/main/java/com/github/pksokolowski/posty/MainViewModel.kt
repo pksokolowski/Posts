@@ -10,12 +10,9 @@ import com.github.pksokolowski.posty.api.models.User
 import com.github.pksokolowski.posty.model.PostDetails
 import com.github.pksokolowski.posty.utils.OngoingTasksTracker
 import com.github.pksokolowski.posty.utils.Status
-import com.github.pksokolowski.posty.utils.Status.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.Exception
+import com.github.pksokolowski.posty.utils.Status.ERROR
+import com.github.pksokolowski.posty.utils.Status.OK
+import com.github.pksokolowski.posty.utils.runRequest
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -35,47 +32,37 @@ class MainViewModel @Inject constructor(
     fun getStatus() = status as LiveData<Status>
 
 
-    fun refreshPosts() = GlobalScope.launch(Dispatchers.Main) {
+    fun refreshPosts() {
         ongoingTasksTracker.startOne()
-        var result: List<Post>? = null
-        withContext(Dispatchers.IO) {
-            try {
-                result = service.getPosts()
-            } catch (ignored: Exception) {
-            }
-        }
-        ongoingTasksTracker.endOne()
-
-        if (result == null) {
+        suspend {
+            service.getPosts()
+        }.runRequest({
+            ongoingTasksTracker.endOne()
             status.value = ERROR(R.string.status_offline)
-            return@launch
+        }) {
+            ongoingTasksTracker.endOne()
+            posts.value = it
+            status.value = OK
         }
-
-        posts.value = result
-        status.value = OK
     }
 
-    fun setActivePost(post: Post) = GlobalScope.launch(Dispatchers.Main) {
+    private class AuthorAndCommentsResponse(val author: User, val comments: List<Comment>)
+
+    fun setActivePost(post: Post) {
         detailedActivePost.value = PostDetails(post, null, null)
         ongoingTasksTracker.startOne()
-        var author: User? = null
-        var comments: List<Comment>? = null
-        withContext(Dispatchers.IO) {
-            try {
-                author = service.getUserById(post.userId)
-                comments = service.getComments(post.id)
-            } catch (ignored: Exception) {
-            }
-        }
-        ongoingTasksTracker.endOne()
-
-        if (author == null || comments == null) {
+        suspend {
+            val author = service.getUserById(post.userId)
+            val comments = service.getComments(post.id)
+            AuthorAndCommentsResponse(author, comments)
+        }.runRequest({
+            ongoingTasksTracker.endOne()
             status.value = ERROR(R.string.status_offline)
-            return@launch
+        }) {
+            ongoingTasksTracker.endOne()
+            detailedActivePost.value = PostDetails(post, it.author, it.comments)
+            status.value = OK
         }
-
-        detailedActivePost.value = PostDetails(post, author, comments)
-        status.value = OK
     }
 
 }
