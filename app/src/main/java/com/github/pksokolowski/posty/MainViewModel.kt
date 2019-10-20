@@ -35,11 +35,12 @@ class MainViewModel @Inject constructor(
         { service.getPosts() },
         {
             status.value = ERROR(R.string.status_offline)
-        })
-    {
-        posts.value = it
-        status.value = OK
-    }
+        },
+        {
+            posts.value = it
+            status.value = OK
+        }
+    )
 
     private suspend fun getAuthorAndComments(post: Post) = AuthorAndCommentsResponse(
         service.getUserById(post.userId),
@@ -55,11 +56,12 @@ class MainViewModel @Inject constructor(
             { getAuthorAndComments(post) },
             {
                 status.value = ERROR(R.string.status_offline)
-            })
-        {
-            detailedActivePost.value = PostDetails(post, it.author, it.comments)
-            status.value = OK
-        }
+            },
+            {
+                detailedActivePost.value = PostDetails(post, it.author, it.comments)
+                status.value = OK
+            }
+        )
     }
 
 }

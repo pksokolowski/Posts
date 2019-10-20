@@ -2,8 +2,6 @@ package com.github.pksokolowski.posty.screens.active
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Html
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.pksokolowski.posty.MainViewModel
 import com.github.pksokolowski.posty.R
 import com.github.pksokolowski.posty.di.ViewModelFactory
-import com.github.pksokolowski.posty.screens.posts.PostsAdapter
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_active_post.*
 import javax.inject.Inject

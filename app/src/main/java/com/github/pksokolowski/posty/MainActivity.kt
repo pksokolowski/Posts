@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.github.pksokolowski.posty.di.ViewModelFactory
 import com.github.pksokolowski.posty.screens.posts.PostsFragment
-import com.github.pksokolowski.posty.utils.Status
 import com.github.pksokolowski.posty.utils.Status.*
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
