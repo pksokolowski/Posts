@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.github.pksokolowski.posty.R
 import com.github.pksokolowski.posty.api.models.Comment
 import com.github.pksokolowski.posty.model.PostDetails
-import kotlinx.android.synthetic.main.active_post_header.view.*
-import kotlinx.android.synthetic.main.comment_item.view.authorTextView
-import kotlinx.android.synthetic.main.comment_item.view.bodyTextView
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.active_post_header.*
 
 class CommentsAdapter(private var postData: PostDetails) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -21,13 +20,13 @@ class CommentsAdapter(private var postData: PostDetails) :
         setPostData(postData)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         if (viewType == HEADER) {
             val headerHolder = HeaderViewHolder(
                 LayoutInflater.from(parent.context)
                     .inflate(R.layout.active_post_header, parent, false)
             )
-            headerHolder.author.movementMethod = LinkMovementMethod.getInstance()
+            headerHolder.authorTextView.movementMethod = LinkMovementMethod.getInstance()
             headerHolder
         } else CommentsViewHolder(
             LayoutInflater.from(parent.context)
@@ -43,15 +42,15 @@ class CommentsAdapter(private var postData: PostDetails) :
         when (holder) {
             is CommentsViewHolder -> {
                 with(comments[position - 1]) {
-                    holder.body.text = body
-                    holder.author.text = name
+                    holder.bodyTextView.text = body
+                    holder.authorTextView.text = name
                 }
             }
             is HeaderViewHolder -> {
-                holder.title.text = postData.post.title
-                holder.body.text = postData.post.body
+                holder.titleTextView.text = postData.post.title
+                holder.bodyTextView.text = postData.post.body
                 postData.author?.let { user ->
-                    holder.author.text = Html.fromHtml(
+                    holder.authorTextView.text = Html.fromHtml(
                         "<a href=\"mailto:${user.email}\">${user.name}</a>",
                         Html.FROM_HTML_MODE_COMPACT
                     )
@@ -68,16 +67,11 @@ class CommentsAdapter(private var postData: PostDetails) :
         notifyDataSetChanged()
     }
 
-    class CommentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val body = itemView.bodyTextView
-        val author = itemView.authorTextView
-    }
+    class CommentsViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView), LayoutContainer
 
-    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title = itemView.titleTextView
-        val author = itemView.authorTextView
-        val body = itemView.bodyTextView
-    }
+    class HeaderViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView), LayoutContainer
 
     companion object {
         const val HEADER = 0

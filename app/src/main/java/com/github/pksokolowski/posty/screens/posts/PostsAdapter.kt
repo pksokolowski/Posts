@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.pksokolowski.posty.R
 import com.github.pksokolowski.posty.api.models.Post
-import kotlinx.android.synthetic.main.post_item.view.*
+import kotlinx.android.extensions.LayoutContainer
+import kotlinx.android.synthetic.main.post_item.*
 
 class PostsAdapter : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
     private var posts: List<Post> = listOf()
@@ -21,8 +22,8 @@ class PostsAdapter : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
 
     override fun onBindViewHolder(holder: PostsViewHolder, position: Int) {
         with(posts[position]) {
-            holder.title.text = title
-            holder.body.text = body
+            holder.titleTextView.text = title
+            holder.bodyTextView.text = body
             holder.itemLayout.setOnClickListener {
                 postSelected?.invoke(this)
             }
@@ -34,11 +35,8 @@ class PostsAdapter : RecyclerView.Adapter<PostsAdapter.PostsViewHolder>() {
         notifyDataSetChanged()
     }
 
-    class PostsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val title = itemView.titleTextView
-        val body = itemView.bodyTextView
-        val itemLayout = itemView.itemLayout
-    }
+    class PostsViewHolder(override val containerView: View) :
+        RecyclerView.ViewHolder(containerView), LayoutContainer
 
     var postSelected: ((post: Post) -> Unit)? = null
 }
