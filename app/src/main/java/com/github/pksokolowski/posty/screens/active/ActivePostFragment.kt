@@ -29,7 +29,7 @@ class ActivePostFragment : Fragment() {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
 
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory)
+        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
             .get(MainViewModel::class.java)
 
     }

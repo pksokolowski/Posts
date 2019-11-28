@@ -38,11 +38,11 @@ class PostsFragment : Fragment() {
         AndroidSupportInjection.inject(this)
         super.onAttach(context)
 
-        viewModel = ViewModelProviders.of(requireActivity(), viewModelFactory)
+        viewModel = ViewModelProviders.of(requireParentFragment(), viewModelFactory)
             .get(MainViewModel::class.java)
 
         try {
-            navigator = context as Navigator
+            navigator = parentFragment as Navigator
         }catch (e: ClassCastException){
             throw RuntimeException("Activity must implement Navigator interface")
         }
