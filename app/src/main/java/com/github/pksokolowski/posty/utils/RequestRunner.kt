@@ -1,10 +1,7 @@
 package com.github.pksokolowski.posty.utils
 
 import com.github.pksokolowski.posty.di.PerApp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @PerApp
@@ -13,10 +10,11 @@ class RequestRunner @Inject constructor(private val ongoingTasksTracker: Ongoing
     fun <R> run(
         body: (suspend () -> R),
         onException: (e: Exception) -> Unit,
-        onSuccess: (r: R) -> Unit
+        onSuccess: (r: R) -> Unit,
+        scope: CoroutineScope = GlobalScope
     ) {
         ongoingTasksTracker.startOne()
-        GlobalScope.launch {
+        scope.launch {
             try {
                 val result = body.invoke()
                 withContext(Dispatchers.Main) {

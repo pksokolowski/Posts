@@ -3,6 +3,7 @@ package com.github.pksokolowski.posty
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.github.pksokolowski.posty.api.JsonPlaceholderService
 import com.github.pksokolowski.posty.api.models.Comment
 import com.github.pksokolowski.posty.api.models.Post
@@ -39,7 +40,8 @@ class MainViewModel @Inject constructor(
         {
             posts.value = it
             status.value = OK
-        }
+        },
+        scope = viewModelScope
     )
 
     private suspend fun getAuthorAndComments(post: Post) = AuthorAndCommentsResponse(
